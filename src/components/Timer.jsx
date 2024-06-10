@@ -10,8 +10,9 @@ import { toast } from "react-toastify";
 import bell from "../assets/bell-98033.mp3";
 
 const Timer = ({ firstTask, handleDelete }) => {
-  const [seconds, setSeconds] = useState(3);
+  const [seconds, setSeconds] = useState(1500);
   const [isActive, setIsActive] = useState(false);
+  const [mode, setMode] = useState("work");
   const bellRef = useRef(null);
 
   function resetTimer() {
@@ -21,6 +22,18 @@ const Timer = ({ firstTask, handleDelete }) => {
 
   const toggleTimer = () => {
     setIsActive((prevIsActive) => !prevIsActive);
+  };
+
+  const switchMode = () => {
+    if (mode === "work") {
+      setMode("break");
+      setSeconds(300);
+      toggleTimer();
+      handleDelete(firstTask.id);
+    } else {
+      setMode("work");
+      setSeconds(1500);
+    }
   };
 
   useEffect(() => {
@@ -49,13 +62,13 @@ const Timer = ({ firstTask, handleDelete }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const percentage = (seconds / 1500) * 100;
+  const percentage = (seconds / mode === "work" ? 1500 : 300) * 100;
 
   return (
     <CircularProgressbarWithChildren
       value={percentage}
       styles={buildStyles({
-        pathColor: "red",
+        pathColor: mode === "work" ? "red" : "green",
         trailColor: "gray",
       })}
       strokeWidth={5}
@@ -73,7 +86,7 @@ const Timer = ({ firstTask, handleDelete }) => {
           <button onClick={toggleTimer}>
             {isActive ? <LuPause size={60} /> : <LuPlay size={60} />}
           </button>
-          <button>
+          <button onClick={switchMode}>
             <LuSkipForward size={30} />
           </button>
         </div>
