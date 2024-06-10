@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CircularProgressbar,
   CircularProgressbarWithChildren,
@@ -10,20 +10,26 @@ import "react-circular-progressbar/dist/styles.css";
 const Timer = ({ firstTask }) => {
   const [seconds, setSeconds] = useState(1500);
   const [isActive, setIsActive] = useState(false);
-  const [id, setId] = useState("");
+
+  function resetTimer() {
+    setSeconds(1500);
+    setIsActive(false);
+  }
 
   const toggleTimer = () => {
     setIsActive((prevIsActive) => !prevIsActive);
-    if (!isActive) {
-      setId(
-        setInterval(() => {
-          setSeconds((prevSeconds) => prevSeconds - 1);
-        }, 1000)
-      );
-    } else {
-      clearInterval(id);
-    }
   };
+
+  useEffect(() => {
+    if (isActive) {
+      const id = setInterval(() => {
+        setSeconds((prevSeconds) => prevSeconds - 1);
+      }, 1000);
+
+      // quand le composant est démonté
+      return () => clearInterval(id);
+    }
+  }, [isActive]);
 
   const formatTimeToString = (time) => {
     const minutes = Math.floor(time / 60);
@@ -49,7 +55,7 @@ const Timer = ({ firstTask }) => {
         <p className="text-7xl">{formatTimeToString(seconds)}</p>
         <p>{firstTask}</p>
         <div className="flex gap-2">
-          <button>
+          <button onClick={resetTimer}>
             <LuRotateCcw size={30} />
           </button>
           <button onClick={toggleTimer}>
