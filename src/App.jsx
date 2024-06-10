@@ -7,7 +7,7 @@ import Timer from "./components/Timer";
 function App() {
   const [tasks, setTasks] = useState([]);
 
-  const firstTask = tasks[0].name;
+  const firstTask = tasks[0]?.name;
 
   return (
     <div className="bg-slate-900 min-h-screen">

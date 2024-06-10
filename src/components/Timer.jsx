@@ -4,16 +4,25 @@ import {
   CircularProgressbarWithChildren,
   buildStyles,
 } from "react-circular-progressbar";
-import { LuPlay, LuRotateCcw, LuSkipForward } from "react-icons/lu";
+import { LuPause, LuPlay, LuRotateCcw, LuSkipForward } from "react-icons/lu";
 import "react-circular-progressbar/dist/styles.css";
 
 const Timer = ({ firstTask }) => {
   const [seconds, setSeconds] = useState(1500);
+  const [isActive, setIsActive] = useState(false);
+  const [id, setId] = useState("");
 
-  const startTimer = () => {
-    setInterval(() => {
-      setSeconds((prevSeconds) => prevSeconds - 1);
-    }, 1000);
+  const toggleTimer = () => {
+    setIsActive((prevIsActive) => !prevIsActive);
+    if (!isActive) {
+      setId(
+        setInterval(() => {
+          setSeconds((prevSeconds) => prevSeconds - 1);
+        }, 1000)
+      );
+    } else {
+      clearInterval(id);
+    }
   };
 
   const formatTimeToString = (time) => {
@@ -43,8 +52,8 @@ const Timer = ({ firstTask }) => {
           <button>
             <LuRotateCcw size={30} />
           </button>
-          <button onClick={startTimer}>
-            <LuPlay size={60} />
+          <button onClick={toggleTimer}>
+            {isActive ? <LuPause size={60} /> : <LuPlay size={60} />}
           </button>
           <button>
             <LuSkipForward size={30} />
