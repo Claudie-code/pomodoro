@@ -3,12 +3,8 @@ import { FaTrash } from "react-icons/fa";
 import { LuPen, LuTrash } from "react-icons/lu";
 import TaskForm from "./TaskForm";
 
-const TaskItem = ({ task, setTasks }) => {
+const TaskItem = ({ task, setTasks, handleDelete }) => {
   const [isEdit, setIsEdit] = useState(false);
-
-  const handleDelete = () => {
-    setTasks((prevTasks) => prevTasks.filter((prevTask) => prevTask.id !== id));
-  };
 
   return (
     <div className="grow">
@@ -25,7 +21,7 @@ const TaskItem = ({ task, setTasks }) => {
           <button className="mr-2" onClick={() => setIsEdit(!isEdit)}>
             <LuPen />
           </button>
-          <button onClick={handleDelete}>
+          <button onClick={() => handleDelete(task.id)}>
             <LuTrash />
           </button>
         </div>

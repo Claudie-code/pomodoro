@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { SortableItem } from "./SortableItem";
 
-const TaskList = ({ tasks, setTasks }) => {
+const TaskList = ({ tasks, setTasks, handleDelete }) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -54,7 +54,12 @@ const TaskList = ({ tasks, setTasks }) => {
       <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
         {tasks.map((task) => (
           <SortableItem key={task.id} id={task.id}>
-            <TaskItem key={task.id} task={task} setTasks={setTasks} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              setTasks={setTasks}
+              handleDelete={handleDelete}
+            />
           </SortableItem>
         ))}
       </SortableContext>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CircularProgressbar,
   CircularProgressbarWithChildren,
@@ -6,10 +6,13 @@ import {
 } from "react-circular-progressbar";
 import { LuPause, LuPlay, LuRotateCcw, LuSkipForward } from "react-icons/lu";
 import "react-circular-progressbar/dist/styles.css";
+import { toast } from "react-toastify";
+import bell from "../assets/bell-98033.mp3";
 
-const Timer = ({ firstTask }) => {
-  const [seconds, setSeconds] = useState(1500);
+const Timer = ({ firstTask, handleDelete }) => {
+  const [seconds, setSeconds] = useState(3);
   const [isActive, setIsActive] = useState(false);
+  const bellRef = useRef(null);
 
   function resetTimer() {
     setSeconds(1500);
@@ -30,6 +33,15 @@ const Timer = ({ firstTask }) => {
       return () => clearInterval(id);
     }
   }, [isActive]);
+
+  useEffect(() => {
+    if (seconds === 0) {
+      toast("La session est terminée !");
+      bellRef.current.play();
+      setIsActive(false);
+      handleDelete(firstTask?.id);
+    }
+  }, [seconds]);
 
   const formatTimeToString = (time) => {
     const minutes = Math.floor(time / 60);
@@ -53,7 +65,7 @@ const Timer = ({ firstTask }) => {
           Settings
         </button>
         <p className="text-7xl">{formatTimeToString(seconds)}</p>
-        <p>{firstTask}</p>
+        <p>{firstTask?.name}</p>
         <div className="flex gap-2">
           <button onClick={resetTimer}>
             <LuRotateCcw size={30} />
@@ -65,6 +77,7 @@ const Timer = ({ firstTask }) => {
             <LuSkipForward size={30} />
           </button>
         </div>
+        <audio ref={bellRef} src={bell} />
       </div>
     </CircularProgressbarWithChildren>
   );
