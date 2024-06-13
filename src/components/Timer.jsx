@@ -8,15 +8,24 @@ import { LuPause, LuPlay, LuRotateCcw, LuSkipForward } from "react-icons/lu";
 import "react-circular-progressbar/dist/styles.css";
 import { toast } from "react-toastify";
 import bell from "../assets/bell-98033.mp3";
+import formatTimeToString from "../utils/formatTimeToString";
 
-const Timer = ({ firstTask, handleDelete }) => {
-  const [seconds, setSeconds] = useState(1500);
+const Timer = ({
+  firstTask,
+  handleDelete,
+  toggleModal,
+  workDuration,
+  breakDuration,
+  mode,
+  setMode,
+  setSeconds,
+  seconds,
+}) => {
   const [isActive, setIsActive] = useState(false);
-  const [mode, setMode] = useState("work");
   const bellRef = useRef(null);
 
   function resetTimer() {
-    setSeconds(1500);
+    setSeconds(workDuration);
     setIsActive(false);
   }
 
@@ -27,12 +36,12 @@ const Timer = ({ firstTask, handleDelete }) => {
   const switchMode = () => {
     if (mode === "work") {
       setMode("break");
-      setSeconds(300);
+      setSeconds(breakDuration);
       toggleTimer();
-      handleDelete(firstTask.id);
+      handleDelete(firstTask?.id);
     } else {
       setMode("work");
-      setSeconds(1500);
+      setSeconds(workDuration);
     }
   };
 
@@ -52,17 +61,12 @@ const Timer = ({ firstTask, handleDelete }) => {
       toast("La session est terminée !");
       bellRef.current.play();
       setIsActive(false);
-      handleDelete(firstTask?.id);
+      switchMode();
     }
   }, [seconds]);
 
-  const formatTimeToString = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
-  const percentage = (seconds / mode === "work" ? 1500 : 300) * 100;
+  const percentage =
+    (seconds / (mode === "work" ? workDuration : breakDuration)) * 100;
 
   return (
     <CircularProgressbarWithChildren
@@ -74,7 +78,10 @@ const Timer = ({ firstTask, handleDelete }) => {
       strokeWidth={5}
     >
       <div className="text-white flex flex-col items-center gap-3">
-        <button className="bg-gray-50 text-gray-900 rounded font-semibold px-4 py-2 hover:bg-gray-200">
+        <button
+          onClick={toggleModal}
+          className="bg-gray-50 text-gray-900 rounded font-semibold px-4 py-2 hover:bg-gray-200"
+        >
           Settings
         </button>
         <p className="text-7xl">{formatTimeToString(seconds)}</p>
