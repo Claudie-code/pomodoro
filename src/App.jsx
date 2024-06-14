@@ -38,7 +38,7 @@ function App() {
 
   return (
     <div className="bg-slate-900 min-h-screen">
-      <div className="max-w-lg p-4 flex flex-col gap-3">
+      <div className="max-w-lg p-4 flex flex-col gap-3 m-auto">
         <div className="border h-24 rounded overflow-auto text-white p-2 flex justify-center items-center">
           {loading ? (
             <p>"Loading..."</p>
