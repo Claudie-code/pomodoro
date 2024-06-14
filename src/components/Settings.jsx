@@ -1,17 +1,18 @@
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import formatTimeToString from "../utils/formatTimeToString";
+import { useContext } from "react";
+import { SettingsContext } from "../contexts/SettingsContext";
 
-const Settings = ({
-  isVisible,
-  onClose,
-  workDuration,
-  breakDuration,
-  setBreakDuration,
-  setWorkDuration,
-  mode,
-  setSeconds,
-}) => {
+const Settings = ({ isVisible, onClose }) => {
+  const {
+    workDuration,
+    breakDuration,
+    setBreakDuration,
+    setWorkDuration,
+    mode,
+    setSeconds,
+  } = useContext(SettingsContext);
   if (!isVisible) return null;
 
   return (

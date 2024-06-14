@@ -1,72 +1,19 @@
-import { useEffect, useRef, useState } from "react";
 import {
-  CircularProgressbar,
   CircularProgressbarWithChildren,
   buildStyles,
 } from "react-circular-progressbar";
-import { LuPause, LuPlay, LuRotateCcw, LuSkipForward } from "react-icons/lu";
 import "react-circular-progressbar/dist/styles.css";
-import { toast } from "react-toastify";
-import bell from "../assets/bell-98033.mp3";
 import formatTimeToString from "../utils/formatTimeToString";
+import Controls from "./Controls";
+import { useContext } from "react";
+import { SettingsContext } from "../contexts/SettingsContext";
 
-const Timer = ({
-  firstTask,
-  handleDelete,
-  toggleModal,
-  workDuration,
-  breakDuration,
-  mode,
-  setMode,
-  setSeconds,
-  seconds,
-}) => {
-  const [isActive, setIsActive] = useState(false);
-  const bellRef = useRef(null);
+const Timer = ({ firstTask, handleDelete, toggleModal }) => {
+  const { mode, workDuration, breakDuration, seconds } =
+    useContext(SettingsContext);
+  const currentDuration = mode === "work" ? workDuration : breakDuration;
 
-  function resetTimer() {
-    setSeconds(workDuration);
-    setIsActive(false);
-  }
-
-  const toggleTimer = () => {
-    setIsActive((prevIsActive) => !prevIsActive);
-  };
-
-  const switchMode = () => {
-    if (mode === "work") {
-      setMode("break");
-      setSeconds(breakDuration);
-      toggleTimer();
-      handleDelete(firstTask?.id);
-    } else {
-      setMode("work");
-      setSeconds(workDuration);
-    }
-  };
-
-  useEffect(() => {
-    if (isActive) {
-      const id = setInterval(() => {
-        setSeconds((prevSeconds) => prevSeconds - 1);
-      }, 1000);
-
-      // quand le composant est démonté
-      return () => clearInterval(id);
-    }
-  }, [isActive]);
-
-  useEffect(() => {
-    if (seconds === 0) {
-      toast("La session est terminée !");
-      bellRef.current.play();
-      setIsActive(false);
-      switchMode();
-    }
-  }, [seconds]);
-
-  const percentage =
-    (seconds / (mode === "work" ? workDuration : breakDuration)) * 100;
+  const percentage = (seconds / currentDuration) * 100;
 
   return (
     <CircularProgressbarWithChildren
@@ -86,18 +33,11 @@ const Timer = ({
         </button>
         <p className="text-7xl">{formatTimeToString(seconds)}</p>
         <p>{firstTask?.name}</p>
-        <div className="flex gap-2">
-          <button onClick={resetTimer}>
-            <LuRotateCcw size={30} />
-          </button>
-          <button onClick={toggleTimer}>
-            {isActive ? <LuPause size={60} /> : <LuPlay size={60} />}
-          </button>
-          <button onClick={switchMode}>
-            <LuSkipForward size={30} />
-          </button>
-        </div>
-        <audio ref={bellRef} src={bell} />
+        <Controls
+          handleDelete={handleDelete}
+          taskId={firstTask?.id}
+          currentDuration={currentDuration}
+        />
       </div>
     </CircularProgressbarWithChildren>
   );
