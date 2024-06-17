@@ -33,7 +33,6 @@ const Settings = ({ isVisible, onClose }) => {
             <Slider
               onChange={(v) => {
                 setWorkDuration(v);
-                console.log("AfterChange:", v);
               }}
               onChangeComplete={(value) => {
                 mode === "work" && setSeconds(value);
@@ -50,8 +49,6 @@ const Settings = ({ isVisible, onClose }) => {
             <Slider
               onChange={(v) => {
                 setBreakDuration(v);
-
-                console.log("AfterChange:", v);
               }}
               onChangeComplete={(value) => {
                 mode === "break" && setSeconds(value);
